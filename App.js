@@ -1,46 +1,69 @@
-import React, { Component }  from 'react';
-import {FontAwesome} from '@expo/vector-icons';
-import { StyleSheet, Text, View, SectionList, TextInput, TouchableOpacity, ScrollView, Animated } from 'react-native';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
+import React, { Component } from 'react';
+import { FontAwesome } from '@expo/vector-icons';
+import { StyleSheet, Text, View, SectionList, TextInput, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+const dataSource = [
+  {
+    data: [
+      { name: 'Ivan accepted request', type: 'default' },
+    ],
+  },
+  {
+    data: [
+      { name: 'How are you Td?', type: 'user' },
+      { name: 'Cool THX. Wanna know, how often you workout? at GYM:)', type: 'friend' },
+      { name: '5t per week, 3h or more', type: 'user' },
+      { name: 'Thank you.', type: 'user' },
+    ],
+    key: 'Wed Aug 09 2017',
+  },
+  {
+    data: [
+      { name: 'Hey.', type: 'user' },
+      { name: 'Hey', type: 'friend' },
+      { name: 'I\'m here.', type: 'friend' },
+      { name: 'Nevermind', type: 'user' },
+    ],
+    key: 'Thu Aug 10 2017',
+  },
+];
 
-  const dataSource = [
-    {data: [{name: 'Ivan accepted request', type: 'default'} ], key: ' '},
-    {data: [{name: 'How are you Td?', type: 'user'}, {name: 'Cool THX. Wanna know, how often you workout? at GYM:)', type: 'friend'}, {name: '5t per week, 3h or more', type: 'user'},{name: 'Thank you.', type: 'user'} ], key: 'Wed Aug 09 2017'},
-    {data: [{name: 'Hey.', type: 'user'}, {name: 'Hey', type: 'friend'}, {name: 'I\'m here.', type: 'friend'}, {name: 'Nevermind', type: 'user'}], key: 'Thu Aug 10 2017'},
-  ]
 export default class MessagesData extends Component {
   constructor(props) {
     super(props);
-    this.state = {text: ''};
+    this.state = { text: '' };
   }
-
+onSubmitEdit = () => {
+    let inputValue = this.state.inputValue;
+    alert(inputValue);
+};
 
   renderItem(item) {
     return (
-        <View style={item.item.type=='user'?[styles.section, styles.userSection]:(item.item.type=='friend'?[styles.section, styles.friendSection]:[styles.section, styles.defaultSection])}>
-          <Text style={item.item.type=='user'? styles.message : (item.item.type=='friend'? styles.friendMessage:[styles.message, styles.defaultMessage]) }>{item.item.name}</Text>
-        </View>
+      <View style={item.item.type === 'user' ? [styles.section, styles.userSection] : (item.item.type === 'friend' ? [styles.section, styles.friendSection] : [styles.section, styles.defaultSection])}>
+        <Text style={item.item.type === 'user' ? styles.message : (item.item.type === 'friend' ? styles.friendMessage : [styles.message, styles.defaultMessage])}>{item.item.name}</Text>
+      </View>
     );
   }
 
   renderHeader(headerItem) {
     return (
-      <View style={headerItem.section.key==' '? styles.none: [styles.section, styles.defaultSection]}>
+      <View style={!headerItem.section.key ? styles.none : [styles.section, styles.defaultSection]}>
         <Text style={styles.sectionHeader}>{headerItem.section.key}</Text>
       </View>
     );
-  }
-  onSubmitEdit = () => {
-    let inputValue=this.state.inputValue;
-    alert(inputValue);
   }
 
   render() {
     const iconSize = 26;
 
     return (
-      <View style={styles.container}>
+      <KeyboardAwareScrollView
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        contentContainerStyle={styles.container}
+        scrollEnabled={false}
+      >
         <View style={styles.headerBlock}><Text style={styles.header}>Chat</Text></View>
         <SectionList
           renderItem={this.renderItem}
@@ -48,28 +71,29 @@ export default class MessagesData extends Component {
           sections={dataSource}
           keyExtractor={(item) => item.name}
           stickySectionHeadersEnabled={true}
-          />
+        />
         <View style={styles.footer}>
-          <FontAwesome style={styles.image} name={'picture-o'} size={iconSize} color={'#f0eff4'}/>
-          <FontAwesome style={styles.image} name={'camera'} size={iconSize} color={'#f0eff4'}/>
-          <FontAwesome style={styles.image} name={'microphone'} size={iconSize} color={'#f0eff4'}/>
+          <FontAwesome style={styles.image} name={'picture-o'} size={iconSize} color={'#f0eff4'} />
+          <FontAwesome style={styles.image} name={'camera'} size={iconSize} color={'#f0eff4'} />
+          <FontAwesome style={styles.image} name={'microphone'} size={iconSize} color={'#f0eff4'} />
           <TextInput
             style={styles.input}
             placeholder="Message"
             underlineColorAndroid={'transparent'}
             onSubmitEditing={this.submitEdit}
-            ref= {(el) => { this.inputValue = el; }}
-            onChangeText={(inputValue) => this.setState({inputValue})}
+            ref={(el) => { this.inputValue = el; }}
+            onChangeText={(inputValue) => this.setState({ inputValue })}
             value={this.state.inputValue}
-            />
+          />
           <TouchableOpacity style={styles.postBtn} onPress={this.onSubmitEdit}>
-            <FontAwesome style={styles.postIcon} name={'play'} size={15} color={'#fff'}/>
+            <FontAwesome style={styles.postIcon} name={'play'} size={15} color={'#fff'} />
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -86,7 +110,7 @@ const styles = StyleSheet.create({
   header: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: 20,
   },
   section: {
     display: 'flex',
@@ -128,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
     borderRadius: 50,
-    opacity: .8,
+    opacity: 0.8,
   },
   footer: {
     position: 'absolute',
@@ -139,18 +163,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#fff'
-  },
-  test:{
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    backgroundColor: '#fff',
   },
   postIcon: {
     backgroundColor: '#0984FF',
     borderRadius: 30,
-    height:30,
+    height: 30,
     width: 30,
     padding: 5,
   },
